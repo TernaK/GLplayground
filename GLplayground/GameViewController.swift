@@ -13,113 +13,80 @@ import GLKit
 
 class GameViewController: UIViewController, SCNSceneRendererDelegate {
   
-  var lightNode:SCNNode!
   var rootNode:SCNNode!
+  var lightNode:SCNNode!
   var cameraNode:SCNNode!
-  var spacemanNode:SCNNode!
-  var moveSpeed:Float = 1.0
-  var movePace:Float = 10.0
   
   override func viewDidLoad() {
     super.viewDidLoad()
     
     // create a new scene
-    let scene = SCNScene(named: "art.scnassets/hero.dae")!
+    let scene = SCNScene()
     
     let sceneView = self.view as! SCNView
     sceneView.scene = scene
     sceneView.showsStatistics = true
     sceneView.allowsCameraControl = true
-    sceneView.delegate = self
     
     rootNode = scene.rootNode
     
-    setupLighting(scene: scene)
-    setupCameras(scene: scene)
+    setupLight()
+    setupCamera()
+    createFloor()
     
-    spacemanNode = rootNode.childNode(withName: "hero", recursively: true)!
-    spacemanNode.position.z = -200
-    
-    rootNode.addChildNode(createFloorNode())
-    rootNode.addChildNode(Obstacles.PyramidNode())
-    rootNode.addChildNode(Obstacles.createStartingText())
-  }
-  override var shouldAutorotate: Bool {
-    return true
-  }
-  
-  override var prefersStatusBarHidden: Bool {
-    return true
-  }
-  
-  override func didReceiveMemoryWarning() {
-    super.didReceiveMemoryWarning()
-    // Release any cached data, images, etc that aren't in use.
+    let body = SCNBox(width: 15, height: 15, length: 15, chamferRadius: 1.0)
+    body.firstMaterial?.diffuse.contents = UIColor(red: 0.8, green: 0, blue: 0, alpha: 1)
+    body.firstMaterial?.ambient.contents = UIColor(red: 0.1, green: 0, blue: 0, alpha: 1)
+    body.firstMaterial?.specular.contents = UIColor.darkGray
+    body.firstMaterial?.shininess = 0.4
+    body.firstMaterial?.lightingModel = .phong
+    let bodyNode = SCNNode(geometry: body)
+    bodyNode.position = vec3(0,30,0)
+    bodyNode.runAction(SCNAction.repeatForever(SCNAction.sequence([
+      SCNAction.move(by: vec3(15,0,0), duration: 1.0),
+      SCNAction.move(by: vec3(-15,0,0), duration: 1.0)
+      ])))
+    bodyNode.runAction(SCNAction.repeatForever(SCNAction.rotateBy(x: 0, y: 1, z: 0, duration: 2)))
+    rootNode.addChildNode(bodyNode)
   }
   
-  func setupCameras(scene:SCNScene) {
-    cameraNode = rootNode.childNode(withName: "camera", recursively: true)
-    cameraNode.camera = SCNCamera()
-    cameraNode.constraints = [SCNLookAtConstraint(target: spacemanNode)]
-    cameraNode.camera!.zFar = 500
-//    cameraNode.position = SCNVector3(x: 0.0, y: 200.0, z: 200.0)
-    //cameraNode.rotation = SCNVector4(x: 1.0, y: 0.0, z: 0.0, w: -Float.pi/4*0.75)
+  func setupCamera() {
+    cameraNode = SCNNode()
+    let camera = SCNCamera()
+    camera.zNear = 0.1
+    camera.zFar = 300
+    cameraNode.camera = camera
+    cameraNode.position = vec3(0,50,70)
+    cameraNode.rotation.x = -Float.pi/2
     rootNode.addChildNode(cameraNode)
   }
   
-  func createFloorNode() -> SCNNode {
+  func createFloor() {
     let floorNode = SCNNode()
     floorNode.geometry = SCNFloor()
-    floorNode.geometry?.firstMaterial?.diffuse.contents = "Floor"
-    floorNode.position.y = -1.0
-    
-    return floorNode
+    floorNode.geometry?.firstMaterial?.diffuse.contents = UIColor.blue
+    rootNode.addChildNode(floorNode)
   }
   
-  func setupLighting(scene:SCNScene) {
-    let ambientLight = SCNNode()
-    ambientLight.light = SCNLight()
-    ambientLight.light!.type = .ambient
-    ambientLight.light!.color = UIColor(white: 0.3, alpha: 1.0)
-    scene.rootNode.addChildNode(ambientLight)
+  func setupLight() {
     lightNode = SCNNode()
-    lightNode.light = SCNLight()
-    lightNode.light!.type = .spot
-    lightNode.light!.castsShadow = true
-    lightNode.light!.color = UIColor(white: 0.8, alpha: 1.0)
-//    lightNode.position = SCNVector3Make(0, 80, 30)
-//    lightNode.rotation = SCNVector4Make(1, 0, 0, Float(-Double.pi/2.8))
-    lightNode.light!.spotInnerAngle = 0
-    lightNode.light!.spotOuterAngle = 50
-    lightNode.light!.shadowColor = UIColor.black
-    lightNode.light!.zFar = 500
-    lightNode.light!.zNear = 50
-    scene.rootNode.addChildNode(lightNode)
-  }
-  
-  func renderer(_ renderer: SCNSceneRenderer, didSimulatePhysicsAtTime time: TimeInterval) {
-    moveWithSpaceman()
     
-    let numTouces = (self.view as! GameView).touchCount
+    let ambientLight = SCNLight()
+    ambientLight.type = .ambient
+    ambientLight.color = UIColor.white
+    let ambientLightNode = SCNNode()
+    ambientLightNode.light = ambientLight
+    lightNode.addChildNode(ambientLightNode)
     
-    switch numTouces {
-    case 1:
-      spacemanNode.runAction(SCNAction.moveBy(x: 0, y: 0, z: CGFloat(movePace), duration: TimeInterval(moveSpeed)))
-    case 2:
-      spacemanNode.runAction(SCNAction.moveBy(x: 0, y: 0, z: CGFloat(-movePace), duration: TimeInterval(moveSpeed)))
-    case 3:
-      spacemanNode.runAction(SCNAction.move(to: vec3(0,0,0), duration: TimeInterval(moveSpeed)))
-    default:
-      break
-    }
-  }
-  
-  func moveWithSpaceman() {
-    let spacemanPosition = spacemanNode.position
-    let target = vec3(spacemanPosition.x, 30.0, spacemanPosition.z + 20.0)
-    let damping:Float = 0.3
-    cameraNode.position = cameraNode.position * (1 - damping) + target * damping
-    lightNode.position = vec3(spacemanPosition.x, 90.0, spacemanPosition.z + 40.0)
-    lightNode.rotation = vec4(1.0, 0.0, 0.0,-Float.pi/2.8)
+    let omniLight = SCNLight()
+    omniLight.type = .omni
+    omniLight.color = UIColor(white: 0.75, alpha: 1.0)
+    let omniLightNode = SCNNode()
+    omniLightNode.light = omniLight
+    omniLightNode.position = vec3(0,80,80)
+    lightNode.addChildNode(omniLightNode)
+    lightNode.name = "light"
+    
+    rootNode.addChildNode(lightNode)
   }
 }
