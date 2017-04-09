@@ -9,117 +9,117 @@
 import UIKit
 import QuartzCore
 import SceneKit
+import GLKit
 
-class GameViewController: UIViewController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        // create a new scene
-        let scene = SCNScene(named: "art.scnassets/ship.scn")!
-        
-        // create and add a camera to the scene
-        let cameraNode = SCNNode()
-        cameraNode.camera = SCNCamera()
-        scene.rootNode.addChildNode(cameraNode)
-        
-        // place the camera
-        cameraNode.position = SCNVector3(x: 0, y: 0, z: 15)
-        
-        // create and add a light to the scene
-        let lightNode = SCNNode()
-        lightNode.light = SCNLight()
-        lightNode.light!.type = .omni
-        lightNode.position = SCNVector3(x: 0, y: 10, z: 10)
-        scene.rootNode.addChildNode(lightNode)
-        
-        // create and add an ambient light to the scene
-        let ambientLightNode = SCNNode()
-        ambientLightNode.light = SCNLight()
-        ambientLightNode.light!.type = .ambient
-        ambientLightNode.light!.color = UIColor.darkGray
-        scene.rootNode.addChildNode(ambientLightNode)
-        
-        // retrieve the ship node
-        let ship = scene.rootNode.childNode(withName: "ship", recursively: true)!
-        
-        // animate the 3d object
-        ship.runAction(SCNAction.repeatForever(SCNAction.rotateBy(x: 0, y: 2, z: 0, duration: 1)))
-        
-        // retrieve the SCNView
-        let scnView = self.view as! SCNView
-        
-        // set the scene to the view
-        scnView.scene = scene
-        
-        // allows the user to manipulate the camera
-        scnView.allowsCameraControl = true
-        
-        // show statistics such as fps and timing information
-        scnView.showsStatistics = true
-        
-        // configure the view
-        scnView.backgroundColor = UIColor.black
-        
-        // add a tap gesture recognizer
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
-        scnView.addGestureRecognizer(tapGesture)
-    }
+class GameViewController: UIViewController, SCNSceneRendererDelegate {
+  
+  var lightNode:SCNNode!
+  var rootNode:SCNNode!
+  var cameraNode:SCNNode!
+  var spacemanNode:SCNNode!
+  var moveSpeed:Float = 1.0
+  var movePace:Float = 10.0
+  
+  override func viewDidLoad() {
+    super.viewDidLoad()
     
-    func handleTap(_ gestureRecognize: UIGestureRecognizer) {
-        // retrieve the SCNView
-        let scnView = self.view as! SCNView
-        
-        // check what nodes are tapped
-        let p = gestureRecognize.location(in: scnView)
-        let hitResults = scnView.hitTest(p, options: [:])
-        // check that we clicked on at least one object
-        if hitResults.count > 0 {
-            // retrieved the first clicked object
-            let result: AnyObject = hitResults[0]
-            
-            // get its material
-            let material = result.node!.geometry!.firstMaterial!
-            
-            // highlight it
-            SCNTransaction.begin()
-            SCNTransaction.animationDuration = 0.5
-            
-            // on completion - unhighlight
-            SCNTransaction.completionBlock = {
-                SCNTransaction.begin()
-                SCNTransaction.animationDuration = 0.5
-                
-                material.emission.contents = UIColor.black
-                
-                SCNTransaction.commit()
-            }
-            
-            material.emission.contents = UIColor.red
-            
-            SCNTransaction.commit()
-        }
-    }
+    // create a new scene
+    let scene = SCNScene(named: "art.scnassets/hero.dae")!
     
-    override var shouldAutorotate: Bool {
-        return true
-    }
+    let sceneView = self.view as! SCNView
+    sceneView.scene = scene
+    sceneView.showsStatistics = true
+    sceneView.allowsCameraControl = true
+    sceneView.delegate = self
     
-    override var prefersStatusBarHidden: Bool {
-        return true
-    }
+    rootNode = scene.rootNode
     
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            return .allButUpsideDown
-        } else {
-            return .all
-        }
-    }
+    setupLighting(scene: scene)
+    setupCameras(scene: scene)
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Release any cached data, images, etc that aren't in use.
+    spacemanNode = rootNode.childNode(withName: "hero", recursively: true)!
+    spacemanNode.position.z = -200
+    
+    rootNode.addChildNode(createFloorNode())
+    rootNode.addChildNode(Obstacles.PyramidNode())
+    rootNode.addChildNode(Obstacles.createStartingText())
+  }
+  override var shouldAutorotate: Bool {
+    return true
+  }
+  
+  override var prefersStatusBarHidden: Bool {
+    return true
+  }
+  
+  override func didReceiveMemoryWarning() {
+    super.didReceiveMemoryWarning()
+    // Release any cached data, images, etc that aren't in use.
+  }
+  
+  func setupCameras(scene:SCNScene) {
+    cameraNode = rootNode.childNode(withName: "camera", recursively: true)
+    cameraNode.camera = SCNCamera()
+    cameraNode.constraints = [SCNLookAtConstraint(target: spacemanNode)]
+    cameraNode.camera!.zFar = 500
+//    cameraNode.position = SCNVector3(x: 0.0, y: 200.0, z: 200.0)
+    //cameraNode.rotation = SCNVector4(x: 1.0, y: 0.0, z: 0.0, w: -Float.pi/4*0.75)
+    rootNode.addChildNode(cameraNode)
+  }
+  
+  func createFloorNode() -> SCNNode {
+    let floorNode = SCNNode()
+    floorNode.geometry = SCNFloor()
+    floorNode.geometry?.firstMaterial?.diffuse.contents = "Floor"
+    floorNode.position.y = -1.0
+    
+    return floorNode
+  }
+  
+  func setupLighting(scene:SCNScene) {
+    let ambientLight = SCNNode()
+    ambientLight.light = SCNLight()
+    ambientLight.light!.type = .ambient
+    ambientLight.light!.color = UIColor(white: 0.3, alpha: 1.0)
+    scene.rootNode.addChildNode(ambientLight)
+    lightNode = SCNNode()
+    lightNode.light = SCNLight()
+    lightNode.light!.type = .spot
+    lightNode.light!.castsShadow = true
+    lightNode.light!.color = UIColor(white: 0.8, alpha: 1.0)
+//    lightNode.position = SCNVector3Make(0, 80, 30)
+//    lightNode.rotation = SCNVector4Make(1, 0, 0, Float(-Double.pi/2.8))
+    lightNode.light!.spotInnerAngle = 0
+    lightNode.light!.spotOuterAngle = 50
+    lightNode.light!.shadowColor = UIColor.black
+    lightNode.light!.zFar = 500
+    lightNode.light!.zNear = 50
+    scene.rootNode.addChildNode(lightNode)
+  }
+  
+  func renderer(_ renderer: SCNSceneRenderer, didSimulatePhysicsAtTime time: TimeInterval) {
+    moveWithSpaceman()
+    
+    let numTouces = (self.view as! GameView).touchCount
+    
+    switch numTouces {
+    case 1:
+      spacemanNode.runAction(SCNAction.moveBy(x: 0, y: 0, z: CGFloat(movePace), duration: TimeInterval(moveSpeed)))
+    case 2:
+      spacemanNode.runAction(SCNAction.moveBy(x: 0, y: 0, z: CGFloat(-movePace), duration: TimeInterval(moveSpeed)))
+    case 3:
+      spacemanNode.runAction(SCNAction.move(to: vec3(0,0,0), duration: TimeInterval(moveSpeed)))
+    default:
+      break
     }
-
+  }
+  
+  func moveWithSpaceman() {
+    let spacemanPosition = spacemanNode.position
+    let target = vec3(spacemanPosition.x, 30.0, spacemanPosition.z + 20.0)
+    let damping:Float = 0.3
+    cameraNode.position = cameraNode.position * (1 - damping) + target * damping
+    lightNode.position = vec3(spacemanPosition.x, 90.0, spacemanPosition.z + 40.0)
+    lightNode.rotation = vec4(1.0, 0.0, 0.0,-Float.pi/2.8)
+  }
 }

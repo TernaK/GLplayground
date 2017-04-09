@@ -13,6 +13,9 @@
 		51641A821E9778D10061C04B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 51641A801E9778D10061C04B /* Main.storyboard */; };
 		51641A841E9778D10061C04B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 51641A831E9778D10061C04B /* Assets.xcassets */; };
 		51641A871E9778D10061C04B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 51641A851E9778D10061C04B /* LaunchScreen.storyboard */; };
+		51641A8F1E9779940061C04B /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51641A8E1E9779940061C04B /* Utility.swift */; };
+		51E664671E98BE420045E96D /* Obstacles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51E664661E98BE420045E96D /* Obstacles.swift */; };
+		51E664691E99E4E00045E96D /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51E664681E99E4E00045E96D /* GameView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +27,9 @@
 		51641A831E9778D10061C04B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		51641A861E9778D10061C04B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		51641A881E9778D10061C04B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		51641A8E1E9779940061C04B /* Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
+		51E664661E98BE420045E96D /* Obstacles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Obstacles.swift; sourceTree = "<group>"; };
+		51E664681E99E4E00045E96D /* GameView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,10 +65,13 @@
 				51641A7A1E9778D10061C04B /* AppDelegate.swift */,
 				51641A7C1E9778D10061C04B /* art.scnassets */,
 				51641A7E1E9778D10061C04B /* GameViewController.swift */,
+				51641A8E1E9779940061C04B /* Utility.swift */,
 				51641A801E9778D10061C04B /* Main.storyboard */,
 				51641A831E9778D10061C04B /* Assets.xcassets */,
 				51641A851E9778D10061C04B /* LaunchScreen.storyboard */,
 				51641A881E9778D10061C04B /* Info.plist */,
+				51E664661E98BE420045E96D /* Obstacles.swift */,
+				51E664681E99E4E00045E96D /* GameView.swift */,
 			);
 			path = GLplayground;
 			sourceTree = "<group>";
@@ -142,6 +151,9 @@
 			files = (
 				51641A7F1E9778D10061C04B /* GameViewController.swift in Sources */,
 				51641A7B1E9778D10061C04B /* AppDelegate.swift in Sources */,
+				51E664671E98BE420045E96D /* Obstacles.swift in Sources */,
+				51641A8F1E9779940061C04B /* Utility.swift in Sources */,
+				51E664691E99E4E00045E96D /* GameView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -303,6 +315,7 @@
 				51641A8D1E9778D10061C04B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
