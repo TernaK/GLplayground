@@ -23,48 +23,64 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate {
     // create a new scene
     let scene = SCNScene()
     
-    let sceneView = self.view as! SCNView
+    let sceneView = self.view as! GameView
     sceneView.scene = scene
     sceneView.showsStatistics = true
     sceneView.allowsCameraControl = true
+//    sceneView.autoenablesDefaultLighting = true
     
     rootNode = scene.rootNode
     
     setupLight()
     setupCamera()
     createFloor()
+
+    let spin = SCNAction.repeatForever(SCNAction.rotateBy(x: 0, y: 0, z: 1, duration: 2))
     
-    let body = SCNBox(width: 15, height: 15, length: 15, chamferRadius: 1.0)
-    body.firstMaterial?.diffuse.contents = UIColor(red: 0.8, green: 0, blue: 0, alpha: 1)
-    body.firstMaterial?.ambient.contents = UIColor(red: 0.1, green: 0, blue: 0, alpha: 1)
-    body.firstMaterial?.specular.contents = UIColor.darkGray
-    body.firstMaterial?.shininess = 0.4
-    body.firstMaterial?.lightingModel = .phong
-    let bodyNode = SCNNode(geometry: body)
-    bodyNode.position = vec3(0,30,0)
-    bodyNode.runAction(SCNAction.repeatForever(SCNAction.sequence([
-      SCNAction.move(by: vec3(15,0,0), duration: 1.0),
-      SCNAction.move(by: vec3(-15,0,0), duration: 1.0)
-      ])))
-    bodyNode.runAction(SCNAction.repeatForever(SCNAction.rotateBy(x: 0, y: 1, z: 0, duration: 2)))
-    rootNode.addChildNode(bodyNode)
+    let box = Shapes.BoxNode()
+    box.runAction(spin)
+    
+    let pyramid = Shapes.PyramidNode()
+    pyramid.runAction(spin)
+    pyramid.position.x = -1.5
+    
+    let torrus = Shapes.TorusNode()
+    torrus.runAction(spin)
+    torrus.position.x = 1.5
+    
+    let cylinder = Shapes.CylinderNode()
+    cylinder.runAction(spin)
+    cylinder.position.z = -1.5
+    
+    let tube = Shapes.TubeNode()
+    tube.runAction(spin)
+    tube.position.z = -1.5
+    tube.position.x = 1.5
+    
+    
+    rootNode.addChildNode(box)
+    rootNode.addChildNode(pyramid)
+    rootNode.addChildNode(torrus)
+    rootNode.addChildNode(cylinder)
+    rootNode.addChildNode(tube)
   }
   
   func setupCamera() {
     cameraNode = SCNNode()
     let camera = SCNCamera()
     camera.zNear = 0.1
-    camera.zFar = 300
+    camera.zFar = 100
     cameraNode.camera = camera
-    cameraNode.position = vec3(0,50,70)
-    cameraNode.rotation.x = -Float.pi/2
+    cameraNode.position = vec3(0,3,3)
+    cameraNode.rotation = vec4(1,0,0,-Float.pi/4)
     rootNode.addChildNode(cameraNode)
   }
   
   func createFloor() {
     let floorNode = SCNNode()
     floorNode.geometry = SCNFloor()
-    floorNode.geometry?.firstMaterial?.diffuse.contents = UIColor.blue
+    floorNode.geometry?.firstMaterial?.diffuse.contents = UIColor.purple
+    floorNode.position.y = -1.0
     rootNode.addChildNode(floorNode)
   }
   
@@ -73,17 +89,17 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate {
     
     let ambientLight = SCNLight()
     ambientLight.type = .ambient
-    ambientLight.color = UIColor.white
+    ambientLight.color = UIColor(white: 0.3, alpha: 1.0)
     let ambientLightNode = SCNNode()
     ambientLightNode.light = ambientLight
     lightNode.addChildNode(ambientLightNode)
     
     let omniLight = SCNLight()
     omniLight.type = .omni
-    omniLight.color = UIColor(white: 0.75, alpha: 1.0)
+    omniLight.color = UIColor(white: 1.0, alpha: 1.0)
     let omniLightNode = SCNNode()
     omniLightNode.light = omniLight
-    omniLightNode.position = vec3(0,80,80)
+    omniLightNode.position = vec3(20,50,50)
     lightNode.addChildNode(omniLightNode)
     lightNode.name = "light"
     

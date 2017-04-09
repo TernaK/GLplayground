@@ -14,7 +14,7 @@
 		51641A841E9778D10061C04B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 51641A831E9778D10061C04B /* Assets.xcassets */; };
 		51641A871E9778D10061C04B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 51641A851E9778D10061C04B /* LaunchScreen.storyboard */; };
 		51641A8F1E9779940061C04B /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51641A8E1E9779940061C04B /* Utility.swift */; };
-		51E664671E98BE420045E96D /* Obstacles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51E664661E98BE420045E96D /* Obstacles.swift */; };
+		51E664671E98BE420045E96D /* Shapes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51E664661E98BE420045E96D /* Shapes.swift */; };
 		51E664691E99E4E00045E96D /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51E664681E99E4E00045E96D /* GameView.swift */; };
 /* End PBXBuildFile section */
 
@@ -28,7 +28,7 @@
 		51641A861E9778D10061C04B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		51641A881E9778D10061C04B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		51641A8E1E9779940061C04B /* Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
-		51E664661E98BE420045E96D /* Obstacles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Obstacles.swift; sourceTree = "<group>"; };
+		51E664661E98BE420045E96D /* Shapes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shapes.swift; sourceTree = "<group>"; };
 		51E664681E99E4E00045E96D /* GameView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -70,7 +70,7 @@
 				51641A831E9778D10061C04B /* Assets.xcassets */,
 				51641A851E9778D10061C04B /* LaunchScreen.storyboard */,
 				51641A881E9778D10061C04B /* Info.plist */,
-				51E664661E98BE420045E96D /* Obstacles.swift */,
+				51E664661E98BE420045E96D /* Shapes.swift */,
 				51E664681E99E4E00045E96D /* GameView.swift */,
 			);
 			path = GLplayground;
@@ -151,7 +151,7 @@
 			files = (
 				51641A7F1E9778D10061C04B /* GameViewController.swift in Sources */,
 				51641A7B1E9778D10061C04B /* AppDelegate.swift in Sources */,
-				51E664671E98BE420045E96D /* Obstacles.swift in Sources */,
+				51E664671E98BE420045E96D /* Shapes.swift in Sources */,
 				51641A8F1E9779940061C04B /* Utility.swift in Sources */,
 				51E664691E99E4E00045E96D /* GameView.swift in Sources */,
 			);
