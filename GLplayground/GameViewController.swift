@@ -14,6 +14,7 @@ import GLKit
 
 class GameViewController: UIViewController, SCNSceneRendererDelegate {
   
+  var scene: SCNScene!
   var rootNode:SCNNode!
   var lightNode:SCNNode!
   var cameraNode:SCNNode!
@@ -25,11 +26,11 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate {
     super.viewDidLoad()
     
     // create a new scene
-    let scene = SCNScene()
+    scene = SCNScene()
     
     let sceneView = self.view as! GameView
-    sceneView.scene = scene
     sceneView.showsStatistics = true
+    sceneView.scene = scene
     sceneView.allowsCameraControl = true
     sceneView.delegate = self
 //    sceneView.autoenablesDefaultLighting = true
@@ -50,7 +51,6 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate {
     camera.zFar = 50
     cameraNode.camera = camera
     cameraNode.position = vec3(0,0,5)
-//    cameraNode.rotation = vec4(1,0,0,-Float.pi/2)
     rootNode.addChildNode(cameraNode)
   }
   
@@ -110,17 +110,17 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate {
     }
     body.physicsBody = SCNPhysicsBody(type: .dynamic, shape: nil)
     body.physicsBody?.isAffectedByGravity = true
-    body.physicsBody?.applyForce(vec3(Float.random * 3, 8, Float.random), asImpulse: true)
+    body.physicsBody?.applyForce(vec3(2*(Float.random-0.5) * 3, 8, 2*(Float.random-0.5)), asImpulse: true)
     body.physicsBody?.applyTorque(vec4(1, 0, 1, Float.random), asImpulse: true)
     body.position.x = Float.random - 0.5
-    body.position.y = -2//2 * (Float.random - 0.5)
+    body.position.y = -2
     body.name = "body"
     body.geometry?.firstMaterial?.diffuse.contents = UIColor(red: CGFloat(Float.random), green: CGFloat(Float.random), blue: CGFloat(Float.random), alpha: 1.0)
     rootNode.addChildNode(body)
   }
   
   func cleanUp() {
-    let list = ["body", "explosion"]
+    let list = ["body"]
     for node in rootNode.childNodes(passingTest: { node, _ in return list.contains(node.name ?? "") }) {
       if node.presentation.position.y < -3.0 {
         node.removeFromParentNode()
@@ -129,15 +129,18 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate {
   }
   
   func explode() {
+    // find nodes with the name body and blow them up!
     for node in rootNode.childNodes(passingTest: { node, _ in return node.name == "body" }) {
       if (node.physicsBody?.velocity.y)! < Float(0.5) {
-        let explosion = SCNNode()
-        explosion.name = "explosion"
+        let nodePosition = node.presentation.position
         let color = node.geometry?.firstMaterial?.diffuse.contents as! UIColor
-        let spice = createSpice(color: color, geometry: node.geometry!)
-        explosion.addParticleSystem(spice)
-        explosion.position = node.presentation.position
-        rootNode.addChildNode(explosion)
+        let spice = createSpice(color: color, geometry: node.geometry!) // the particle system
+        
+        // place at node's position
+        let transform = SCNMatrix4MakeTranslation(nodePosition.x, nodePosition.y, nodePosition.z)
+      	self.scene.addParticleSystem(spice, transform: transform)
+        
+        // destroy the old guy
         node.removeFromParentNode()
       }
     }
@@ -149,7 +152,7 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate {
       spawnTime = time + TimeInterval(1 + 2 * Float.random)
     }
     explode()
-    cleanUp()
+//    cleanUp() // not necessary when explode it called
   }
   
   func createSpice(color: UIColor = UIColor.white, geometry: SCNGeometry = SCNSphere(radius: 0.5)) -> SCNParticleSystem {
