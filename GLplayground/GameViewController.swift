@@ -11,11 +11,15 @@ import QuartzCore
 import SceneKit
 import GLKit
 
+
 class GameViewController: UIViewController, SCNSceneRendererDelegate {
   
   var rootNode:SCNNode!
   var lightNode:SCNNode!
   var cameraNode:SCNNode!
+  var spawnTime: TimeInterval = 0
+  
+  let spin = SCNAction.repeatForever(SCNAction.rotateBy(x: 1, y: 0, z: 1, duration: 2))
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -27,52 +31,26 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate {
     sceneView.scene = scene
     sceneView.showsStatistics = true
     sceneView.allowsCameraControl = true
+    sceneView.delegate = self
 //    sceneView.autoenablesDefaultLighting = true
     
     rootNode = scene.rootNode
     
     setupLight()
     setupCamera()
-    createFloor()
-
-    let spin = SCNAction.repeatForever(SCNAction.rotateBy(x: 0, y: 0, z: 1, duration: 2))
+    createXYPlane()
+//    createFloor()
     
-    let box = Shapes.BoxNode()
-    box.runAction(spin)
-    
-    let pyramid = Shapes.PyramidNode()
-    pyramid.runAction(spin)
-    pyramid.position.x = -1.5
-    
-    let torrus = Shapes.TorusNode()
-    torrus.runAction(spin)
-    torrus.position.x = 1.5
-    
-    let cylinder = Shapes.CylinderNode()
-    cylinder.runAction(spin)
-    cylinder.position.z = -1.5
-    
-    let tube = Shapes.TubeNode()
-    tube.runAction(spin)
-    tube.position.z = -1.5
-    tube.position.x = 1.5
-    
-    
-    rootNode.addChildNode(box)
-    rootNode.addChildNode(pyramid)
-    rootNode.addChildNode(torrus)
-    rootNode.addChildNode(cylinder)
-    rootNode.addChildNode(tube)
   }
   
   func setupCamera() {
     cameraNode = SCNNode()
     let camera = SCNCamera()
     camera.zNear = 0.1
-    camera.zFar = 100
+    camera.zFar = 50
     cameraNode.camera = camera
-    cameraNode.position = vec3(0,3,3)
-    cameraNode.rotation = vec4(1,0,0,-Float.pi/4)
+    cameraNode.position = vec3(0,0,5)
+//    cameraNode.rotation = vec4(1,0,0,-Float.pi/2)
     rootNode.addChildNode(cameraNode)
   }
   
@@ -82,6 +60,16 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate {
     floorNode.geometry?.firstMaterial?.diffuse.contents = UIColor.purple
     floorNode.position.y = -1.0
     rootNode.addChildNode(floorNode)
+  }
+  
+  func createXYPlane() {
+    let planeNode = SCNNode()
+    planeNode.geometry = SCNPlane(width: 100, height: 100)
+    planeNode.geometry?.firstMaterial?.diffuse.contents = UIColor.white
+    planeNode.geometry?.firstMaterial?.specular.contents = UIColor(white: 0.4, alpha: 1.0)
+    planeNode.geometry?.firstMaterial?.shininess = 0.9
+    planeNode.position.z = -6.0
+    rootNode.addChildNode(planeNode)
   }
   
   func setupLight() {
@@ -96,13 +84,79 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate {
     
     let omniLight = SCNLight()
     omniLight.type = .omni
-    omniLight.color = UIColor(white: 1.0, alpha: 1.0)
+    omniLight.color = UIColor(white: 0.8, alpha: 1.0)
     let omniLightNode = SCNNode()
     omniLightNode.light = omniLight
-    omniLightNode.position = vec3(20,50,50)
+    omniLightNode.position = vec3(20,10,50)
     lightNode.addChildNode(omniLightNode)
     lightNode.name = "light"
     
     rootNode.addChildNode(lightNode)
+  }
+  
+  func spawnShape() {
+    let body: SCNNode
+    let chance = Float.random
+    if chance < 0.2 {
+      body = Shapes.BoxNode()
+    } else if chance < 0.4 {
+      body = Shapes.TorusNode()
+    } else if chance < 0.6 {
+      body = Shapes.PyramidNode()
+    } else if chance < 0.8 {
+      body = Shapes.TubeNode()
+    } else {
+      body = Shapes.CylinderNode()
+    }
+    body.physicsBody = SCNPhysicsBody(type: .dynamic, shape: nil)
+    body.physicsBody?.isAffectedByGravity = true
+    body.physicsBody?.applyForce(vec3(Float.random * 3, 8, Float.random), asImpulse: true)
+    body.physicsBody?.applyTorque(vec4(1, 0, 1, Float.random), asImpulse: true)
+    body.position.x = Float.random - 0.5
+    body.position.y = -2//2 * (Float.random - 0.5)
+    body.name = "body"
+    body.geometry?.firstMaterial?.diffuse.contents = UIColor(red: CGFloat(Float.random), green: CGFloat(Float.random), blue: CGFloat(Float.random), alpha: 1.0)
+    rootNode.addChildNode(body)
+  }
+  
+  func cleanUp() {
+    let list = ["body", "explosion"]
+    for node in rootNode.childNodes(passingTest: { node, _ in return list.contains(node.name ?? "") }) {
+      if node.presentation.position.y < -3.0 {
+        node.removeFromParentNode()
+      }
+    }
+  }
+  
+  func explode() {
+    for node in rootNode.childNodes(passingTest: { node, _ in return node.name == "body" }) {
+      if (node.physicsBody?.velocity.y)! < Float(0.5) {
+        let explosion = SCNNode()
+        explosion.name = "explosion"
+        let color = node.geometry?.firstMaterial?.diffuse.contents as! UIColor
+        let spice = createSpice(color: color, geometry: node.geometry!)
+        explosion.addParticleSystem(spice)
+        explosion.position = node.presentation.position
+        rootNode.addChildNode(explosion)
+        node.removeFromParentNode()
+      }
+    }
+  }
+  
+  func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
+    if time > spawnTime {
+      spawnShape()
+      spawnTime = time + TimeInterval(1 + 2 * Float.random)
+    }
+    explode()
+    cleanUp()
+  }
+  
+  func createSpice(color: UIColor = UIColor.white, geometry: SCNGeometry = SCNSphere(radius: 0.5)) -> SCNParticleSystem {
+    let particleSystem = SCNParticleSystem(named: "Spice", inDirectory: nil)!
+    particleSystem.particleColor = color
+    particleSystem.emitterShape = geometry
+    
+    return particleSystem
   }
 }

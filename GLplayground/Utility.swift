@@ -9,6 +9,12 @@
 import UIKit
 import SceneKit
 
+extension Float {
+  static public var random:Float {
+    return Float(arc4random()) / Float(UInt32.max)
+  }
+}
+
 typealias vec3 = SCNVector3
 typealias vec4 = SCNVector4
 typealias mat4 = SCNMatrix4
@@ -17,8 +23,21 @@ extension vec3: CustomStringConvertible {
   public var description: String {
     return "[\(self.x), \(self.y), \(self.z)]"
   }
+  
+  static public var random:SCNVector3 {
+  	return vec3(Float.random, Float.random, Float.random)
+  }
 }
 
+extension vec4: CustomStringConvertible {
+  public var description: String {
+    return "[\(self.x), \(self.y), \(self.z), \(self.w)]"
+  }
+  
+  static public var random:SCNVector4 {
+    return vec4(Float.random, Float.random, Float.random, Float.random)
+  }
+}
 
 /* SCNVector3 / vec3 */
 

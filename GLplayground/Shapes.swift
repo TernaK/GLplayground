@@ -48,7 +48,7 @@ class Shapes {
   class func TorusNode() -> SCNNode {
     let torus = SCNTorus(ringRadius: 0.4, pipeRadius: 0.1)
     let torusNode = SCNNode(geometry: torus)
-    torusNode.geometry?.firstMaterial?.diffuse.contents = UIColor.orange
+    torusNode.geometry?.firstMaterial?.diffuse.contents = UIColor.white
     torusNode.position = vec3(0,0,0)
     return torusNode
   }
