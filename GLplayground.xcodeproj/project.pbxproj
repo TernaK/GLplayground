@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		51495B291E9D6202005E911D /* EntityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51495B281E9D6202005E911D /* EntityManager.swift */; };
 		51641A7B1E9778D10061C04B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51641A7A1E9778D10061C04B /* AppDelegate.swift */; };
 		51641A7D1E9778D10061C04B /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 51641A7C1E9778D10061C04B /* art.scnassets */; };
 		51641A7F1E9778D10061C04B /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51641A7E1E9778D10061C04B /* GameViewController.swift */; };
@@ -23,6 +24,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		51495B281E9D6202005E911D /* EntityManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntityManager.swift; sourceTree = "<group>"; };
 		51641A771E9778D10061C04B /* GLplayground.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GLplayground.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		51641A7A1E9778D10061C04B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		51641A7C1E9778D10061C04B /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
@@ -84,6 +86,7 @@
 				51E6646B1E9AE5560045E96D /* spark.png */,
 				51E6646E1E9CAD170045E96D /* NodeComponent.swift */,
 				51E664721E9CB0500045E96D /* Player.swift */,
+				51495B281E9D6202005E911D /* EntityManager.swift */,
 			);
 			path = GLplayground;
 			sourceTree = "<group>";
@@ -169,6 +172,7 @@
 				51641A8F1E9779940061C04B /* Utility.swift in Sources */,
 				51E664731E9CB0500045E96D /* Player.swift in Sources */,
 				51E664691E99E4E00045E96D /* GameView.swift in Sources */,
+				51495B291E9D6202005E911D /* EntityManager.swift in Sources */,
 				51E6646F1E9CAD170045E96D /* NodeComponent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
