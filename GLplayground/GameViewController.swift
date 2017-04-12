@@ -100,7 +100,7 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate {
     if chance < 0.2 {
       body = Shapes.BoxNode()
     } else if chance < 0.4 {
-      body = Shapes.TorusNode()
+      body = Shapes.SphereNode()
     } else if chance < 0.6 {
       body = Shapes.PyramidNode()
     } else if chance < 0.8 {

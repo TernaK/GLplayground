@@ -53,6 +53,14 @@ class Shapes {
     return torusNode
   }
 
+  class func SphereNode() -> SCNNode {
+    let sphere = SCNSphere(radius: 0.5)
+    sphere.firstMaterial?.diffuse.contents = UIColor.yellow
+    let sphereNode = SCNNode(geometry: sphere)
+    sphereNode.position = vec3(0,0,0)
+    return sphereNode
+  }
+
   class func createStartingText() -> SCNNode {
     let startText = SCNText(string: "Start!", extrusionDepth: 5)
     startText.chamferRadius = 0.5
