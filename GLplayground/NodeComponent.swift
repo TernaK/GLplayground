@@ -15,7 +15,7 @@ enum Shape {
   case torrus
   case cylinder
   case tube
-//  case sphere
+  case sphere
 }
 
 class NodeComponent: GKComponent {
@@ -24,15 +24,17 @@ class NodeComponent: GKComponent {
   init(shape: Shape, color: UIColor) {
     switch shape {
     case .pyramid:
-      node = Shapes.BoxNode()
+      node = Shapes.PyramidNode()
     case .box:
       node = Shapes.BoxNode()
     case .torrus:
-      node = Shapes.BoxNode()
+      node = Shapes.TorusNode()
     case .cylinder:
-      node = Shapes.BoxNode()
+      node = Shapes.CylinderNode()
     case .tube:
-      node = Shapes.BoxNode()
+      node = Shapes.TubeNode()
+    case .sphere:
+      node = Shapes.SphereNode()
     }
     node.geometry?.firstMaterial?.diffuse.contents = color
     node.geometry?.firstMaterial?.specular.contents = UIColor(white: 0.3, alpha: 1.0)

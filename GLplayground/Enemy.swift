@@ -1,23 +1,24 @@
 //
-//  Player.swift
+//  Enemy.swift
 //  GLplayground
 //
-//  Created by Terna Kpamber on 4/10/17.
+//  Created by Terna Kpamber on 4/11/17.
 //  Copyright © 2017 Terna Kpamber. All rights reserved.
 //
+
 
 import SceneKit
 import GameplayKit
 
-class Player: GKEntity {
+class Enemy: GKEntity {
   override init() {
     super.init()
     
-    let nodeComponent = NodeComponent(shape: .sphere, color: .green)
-    self.addComponent(nodeComponent)
+    let nodeComponent = NodeComponent(shape: .sphere, color: .red)
+    addComponent(nodeComponent)
     
-    let teamComponent = TeamComponent(team: .player)
-    self.addComponent(teamComponent)
+    let teamComponent = TeamComponent(team: .enemy)
+    addComponent(teamComponent)
     
     let actorComponent = ActorComponent()
     self.addComponent(actorComponent)
