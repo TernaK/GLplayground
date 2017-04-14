@@ -11,7 +11,7 @@ import SceneKit
 import GameplayKit
 
 class Enemy: GKEntity {
-  override init() {
+  init(entityManager: EntityManager) {
     super.init()
     
     let nodeComponent = NodeComponent(shape: .sphere, color: .red)
@@ -22,6 +22,9 @@ class Enemy: GKEntity {
     
     let actorComponent = ActorComponent()
     self.addComponent(actorComponent)
+    
+    let moveComponent = MoveComponent(maxSpeed: -1, maxAcceleration: 0, radius: 1.0, entityManager: entityManager)
+    self.addComponent(moveComponent)
   }
   
   required init?(coder aDecoder: NSCoder) {

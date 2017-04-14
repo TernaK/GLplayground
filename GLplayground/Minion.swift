@@ -11,7 +11,7 @@ import GameplayKit
 
 class Minion: GKEntity {
   
-  init(onTeam team: Team) {
+  init(onTeam team: Team, entityManager: EntityManager) {
     super.init()
     
     let teamComponent = TeamComponent(team: team)
@@ -21,6 +21,9 @@ class Minion: GKEntity {
     let scale = 0.15
     nodeComponent.node.scale = vec3(scale, scale, scale)
     addComponent(nodeComponent)
+    
+    let moveComponet = MoveComponent(maxSpeed: 2, maxAcceleration: 1, radius: 0.15, entityManager: entityManager)
+    addComponent(moveComponet)
   }
   
   required init?(coder aDecoder: NSCoder) {

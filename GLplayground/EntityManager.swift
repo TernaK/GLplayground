@@ -19,7 +19,8 @@ class EntityManager {
   
   lazy var componentSystems: [GKComponentSystem] = {
     let actorSystem = GKComponentSystem(componentClass: ActorComponent.self)
-    return [actorSystem]
+    let moveSystem = GKComponentSystem(componentClass: MoveComponent.self)
+    return [actorSystem, moveSystem]
   }()
   
   init(scene: SCNScene) {
@@ -59,8 +60,8 @@ class EntityManager {
     }
   }
   
-  func actorEntityForTeam(team: Team) -> GKEntity! {
-    for entity in  entities {
+  func entityForTeam(_ team: Team) -> GKEntity! {
+    for entity in self.entities {
       if
         let _ = entity.component(ofType: ActorComponent.self),
         let teamComponent = entity.component(ofType: TeamComponent.self) {
@@ -72,8 +73,37 @@ class EntityManager {
     return nil
   }
   
+  func entitiesForTeam(_ team: Team) -> [GKEntity] {
+    var entities = [GKEntity]()
+    
+    for entity in self.entities {
+      if
+        let teamComponent = entity.component(ofType: TeamComponent.self) {
+        if team == teamComponent.team {
+          entities.append(entity)
+        }
+      }
+    }
+    
+    return entities
+  }
+  
+  func moveComponentsForTeam(_ team: Team) -> [MoveComponent] {
+    
+    let entitiesToMove = entitiesForTeam(team)
+    
+    var moveComponents = [MoveComponent]()
+    for entity in entitiesToMove {
+      if let moveComponent = entity.component(ofType: MoveComponent.self) {
+        moveComponents.append(moveComponent)
+      }
+    }
+    
+    return moveComponents
+  }
+  
   func spawnMinion(team: Team) {
-    guard let entity = actorEntityForTeam(team: team) else {
+    guard let entity = entityForTeam(team) else {
       return
     }
     let cost = 50
@@ -85,7 +115,7 @@ class EntityManager {
     
     entity.component(ofType: ActorComponent.self)?.points -= cost
     
-    let minion = Minion(onTeam: team)
+    let minion = Minion(onTeam: team, entityManager: self)
     let minionNode = (minion.component(ofType: NodeComponent.self)?.node)!
     let entityNode = (entity.component(ofType: NodeComponent.self)?.node)!
     minionNode.position = entityNode.position

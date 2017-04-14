@@ -25,13 +25,13 @@ class GameScene: SCNScene, SCNSceneRendererDelegate {
   }
   
   func addPlayer() {
-    player = Player()
+    player = Player(entityManager: entityManager)
     player.component(ofType: NodeComponent.self)?.node.position = vec3(0,0,5)
     entityManager.add(entity: player)
   }
   
   func addEnemy() {
-    enemy = Enemy()
+    enemy = Enemy(entityManager: entityManager)
     enemy.component(ofType: NodeComponent.self)?.node.position = vec3(0,0,-5)
     entityManager.add(entity: enemy)
   }
