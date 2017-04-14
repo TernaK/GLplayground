@@ -107,11 +107,11 @@ class EntityManager {
       return
     }
     let cost = 50
-    if let points = entity.component(ofType: ActorComponent.self)?.points {
-      if cost > points {
-        return
-      }
-    }
+//    if let points = entity.component(ofType: ActorComponent.self)?.points {
+//      if cost > points {
+//        return
+//      }
+//    }
     
     entity.component(ofType: ActorComponent.self)?.points -= cost
     
@@ -122,7 +122,7 @@ class EntityManager {
     minionNode.position.y += 0.75
     minionNode.opacity = 0
     add(entity: minion)
-    minionNode.runAction(.fadeIn(duration: 0.3))
-    minionNode.runAction(SCNAction.repeatForever(.rotateBy(x: 0, y: CGFloat(Float.pi * 2), z: 0, duration: 3)))
+//    minionNode.runAction(.fadeIn(duration: 0.3))
+//    minionNode.runAction(SCNAction.repeatForever(.rotateBy(x: 0, y: CGFloat(Float.pi * 2), z: 0, duration: 3)))
   }
 }

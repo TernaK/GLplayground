@@ -21,27 +21,29 @@ class MoveComponent: GKAgent3D, GKAgentDelegate {
   init(maxSpeed: Float, maxAcceleration: Float, radius: Float, entityManager: EntityManager) {
     self.entityManager = entityManager
     super.init()
+    self.delegate = self
     self.maxSpeed = maxSpeed
     self.maxAcceleration = maxAcceleration
     self.radius = radius
     self.mass = 0.01
-    self.delegate = self
   }
   
   func agentWillUpdate(_ agent: GKAgent) {
-    guard let nodeComponent = agent.entity?.component(ofType: NodeComponent.self) else {
+    guard let nodeComponent = entity?.component(ofType: NodeComponent.self) else {
       return
     }
     let pos = nodeComponent.node.presentation.position
     self.position = float3(pos.x, pos.y, pos.z)
+    print("will: \(pos)")
   }
   
   func agentDidUpdate(_ agent: GKAgent) {
-    guard let nodeComponent = agent.entity?.component(ofType: NodeComponent.self) else {
+    guard let nodeComponent = entity?.component(ofType: NodeComponent.self) else {
       return
     }
     let pos = self.position
     nodeComponent.node.position = vec3(pos.x, pos.y, pos.z)
+    print("did: \(pos)")
   }
   
   func closestMoveComponentForTeam(_ team: Team) -> GKAgent3D? {
@@ -61,6 +63,8 @@ class MoveComponent: GKAgent3D, GKAgentDelegate {
   }
   
   override func update(deltaTime seconds: TimeInterval) {
+    super.update(deltaTime: seconds)
+    
     guard
       let entity = entity,
       let teamComponent = entity.component(ofType: TeamComponent.self) else {
