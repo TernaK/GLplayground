@@ -33,6 +33,7 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate {
     sceneView.allowsCameraControl = true
     sceneView.delegate = self
     sceneView.delegate = (scene as! GameScene)
+    sceneView.isPlaying = true
     rootNode = scene.rootNode
     
     setupLight()

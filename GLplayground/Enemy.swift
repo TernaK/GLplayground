@@ -24,7 +24,7 @@ class Enemy: GKEntity {
     self.addComponent(actorComponent)
     
     let moveComponent = MoveComponent(maxSpeed: -1, maxAcceleration: 0, radius: 1.0, entityManager: entityManager)
-//    self.addComponent(moveComponent)
+    self.addComponent(moveComponent)
   }
   
   required init?(coder aDecoder: NSCoder) {

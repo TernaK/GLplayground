@@ -33,7 +33,7 @@ class MoveComponent: GKAgent3D, GKAgentDelegate {
       return
     }
     let pos = nodeComponent.node.presentation.position
-    self.position = float3(pos.x, pos.y, pos.z)
+    self.position = float3(pos)
     print("will: \(pos)")
   }
   
@@ -42,7 +42,7 @@ class MoveComponent: GKAgent3D, GKAgentDelegate {
       return
     }
     let pos = self.position
-    nodeComponent.node.position = vec3(pos.x, pos.y, pos.z)
+    nodeComponent.node.position = vec3(self.position)
     print("did: \(pos)")
   }
   

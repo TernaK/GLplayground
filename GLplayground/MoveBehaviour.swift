@@ -18,7 +18,7 @@ class MoveBehaviour: GKBehavior {
       setWeight(0.5, for: GKGoal(toReachTargetSpeed: targetSpeed))
       setWeight(0.5, for: GKGoal(toSeekAgent: seek))
 //      print("seek: \(seek.position)")
-//      setWeight(1.0, for: GKGoal(toAvoid: avoid, maxPredictionTime: 1.0))
+      setWeight(1.0, for: GKGoal(toAvoid: avoid, maxPredictionTime: 1.0))
     }
   }
 }
