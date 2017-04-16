@@ -34,16 +34,13 @@ class MoveComponent: GKAgent3D, GKAgentDelegate {
     }
     let pos = nodeComponent.node.presentation.position
     self.position = float3(pos)
-    print("will: \(pos)")
   }
   
   func agentDidUpdate(_ agent: GKAgent) {
     guard let nodeComponent = entity?.component(ofType: NodeComponent.self) else {
       return
     }
-    let pos = self.position
     nodeComponent.node.position = vec3(self.position)
-    print("did: \(pos)")
   }
   
   func closestMoveComponentForTeam(_ team: Team) -> GKAgent3D? {

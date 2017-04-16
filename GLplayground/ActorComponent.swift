@@ -21,10 +21,9 @@ class ActorComponent: GKComponent {
   override func update(deltaTime seconds: TimeInterval) {
     super.update(deltaTime: seconds)
     
-    elapsed = seconds
-    let timeDiff = elapsed - lastPointPackage
-    if timeDiff > TimeInterval(1.0) {
-      lastPointPackage = seconds
+    lastPointPackage += seconds
+    if lastPointPackage > TimeInterval(1.0) {
+      lastPointPackage = 0
       points += 10
     }
   }

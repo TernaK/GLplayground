@@ -14,6 +14,7 @@ class GameScene: SCNScene, SCNSceneRendererDelegate {
   var player: Player!
   var enemy: Enemy!
   var spawned = false
+  var lastUpdateTime: TimeInterval?
   
   override init() {
     super.init()
@@ -24,8 +25,8 @@ class GameScene: SCNScene, SCNSceneRendererDelegate {
     addEnemy()
     
     if spawned == false {
-      entityManager.spawnMinion(team: .enemy)
-      entityManager.spawnMinion(team: .player)
+//      entityManager.spawnMinion(team: .enemy)
+//      entityManager.spawnMinion(team: .player)
       spawned = true
     }
     
@@ -44,7 +45,18 @@ class GameScene: SCNScene, SCNSceneRendererDelegate {
   }
   
   func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
-    entityManager.update(time)
+    var deltaTime: TimeInterval
+    
+    if let lastTime = lastUpdateTime {
+      deltaTime = time - lastTime
+      lastUpdateTime = time
+    }
+    else {
+      deltaTime = 0
+      lastUpdateTime = time
+    }
+    
+    entityManager.update(deltaTime)
   }
   
   required init?(coder aDecoder: NSCoder) {

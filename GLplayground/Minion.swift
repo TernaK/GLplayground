@@ -22,7 +22,7 @@ class Minion: GKEntity {
     nodeComponent.node.scale = vec3(scale, scale, scale)
     addComponent(nodeComponent)
     
-    let moveComponet = MoveComponent(maxSpeed: 1.0, maxAcceleration: 0.5, radius: 0.15, entityManager: entityManager)
+    let moveComponet = MoveComponent(maxSpeed: 2.0, maxAcceleration: 1.0, radius: 0.15, entityManager: entityManager)
     addComponent(moveComponet)
   }
   
